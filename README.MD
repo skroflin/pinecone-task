@@ -21,7 +21,7 @@ npm run start
 
 ## Frontend functionality
 
-So far, the frontend portion doesn't work.
+Able to retrieve and create new nodes through the UI.
 
 Inside `pinecone-clien/src/utils/api.ts` I defined functions designed to send API calls to the backend portion. The functions were then implemented into constraints that are planned to be used in components that will be displayed on the UI.
 

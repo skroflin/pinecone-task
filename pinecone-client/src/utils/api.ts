@@ -1,28 +1,46 @@
 import axios from "axios";
 
-const base_url = 'http://localhost:3003/api/nodes'
+const BASE_URL = import.meta.env.VITE_BASE_URL;
 
 async function apiGetCall(route: string) {
-    const res = await axios.get(`${base_url}/api/${route}`, {
+    const res = await axios.get(`${BASE_URL}/api/${route}`, {
         headers: {
+            'Access-Control-Allow-Credentials': 'true',
             'Access-Control-Allow-Origin': "*"
         }
-    })
-    return res.data
+    });
+    return res.data;
 }
 
+
 async function apiPostCall<T>(route: string, data: T) {
-    const res = await axios.post(`${base_url}/${route}`, data);
+    const res = await axios.post(`${BASE_URL}/api/${route}`, data, {
+        headers: {
+            'Access-Control-Allow-Credentials': 'true',
+            'Access-Control-Allow-Origin': "*"
+        }
+    });
     return res.data;
 }
 
 async function apiPutCall<T>(route: string, data: T) {
-    const res = await axios.put(`${base_url}/${route}`, data);
+    const res = await axios.put(`${BASE_URL}/api/${route}`, data, {
+        headers: {
+            'Access-Control-Allow-Credentials': 'true',
+            'Access-Control-Allow-Origin': "*"
+        }
+    });
     return res.data;
 }
 
 async function apiDeleteCall<T>(route: string, data: T) {
-    const res = await axios.delete(`${base_url}/${route}`, { data: data });
+    const res = await axios.delete(`${BASE_URL}/api/${route}`, {
+        headers: {
+            'Access-Control-Allow-Credentials': 'true',
+            'Access-Control-Allow-Origin': "*"
+        },
+        data: data
+    });
     return res.data;
 }
 

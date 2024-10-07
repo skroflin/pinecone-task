@@ -13,10 +13,12 @@ app.use(express.json());
 app.use(express.urlencoded())
 
 app.use(cors({
-    origin: 'http://localhost:3000',
+    origin: 'http://localhost:5173',
     methods: ['get', 'post', 'put', 'delete'],
     credentials: true
 }))
+
+app.options('*', cors())
 
 app.use('/api/nodes', require('./nodes/routes'));
 

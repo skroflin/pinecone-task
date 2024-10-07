@@ -11,7 +11,7 @@ import {
 
 const router = Router()
 
-router.get("/nodes", async function (req: Request, res: Response, next: NextFunction) {
+router.get("/", async function (req: Request, res: Response, next: NextFunction) {
     try {
         res.json(await getAllNodes())
     } catch (e) {
@@ -19,7 +19,7 @@ router.get("/nodes", async function (req: Request, res: Response, next: NextFunc
     }
 })
 
-router.get("/nodes/:id", async function (req: Request, res: Response, next: NextFunction) {
+router.get("/:id", async function (req: Request, res: Response, next: NextFunction) {
     try {
         const { id } = req.params
         res.json(await getNodeById(id))
@@ -28,7 +28,7 @@ router.get("/nodes/:id", async function (req: Request, res: Response, next: Next
     }
 })
 
-router.post("/nodes", async function (req: Request, res: Response, next: NextFunction) {
+router.post("/", async function (req: Request, res: Response, next: NextFunction) {
     try {
         const { title, parentNodeId, ordering } = req.body
         res.json(await insertNode(title, parentNodeId, ordering))
@@ -37,7 +37,7 @@ router.post("/nodes", async function (req: Request, res: Response, next: NextFun
     }
 })
 
-router.put("/nodes/:id", async function (req: Request, res: Response, next: NextFunction) {
+router.put("/:id", async function (req: Request, res: Response, next: NextFunction) {
     try {
         const { id } = req.params
         const { title } = req.body
@@ -47,7 +47,7 @@ router.put("/nodes/:id", async function (req: Request, res: Response, next: Next
     }
 })
 
-router.put("/nodes/:id/move", async function (req: Request, res: Response, next: NextFunction) {
+router.put("/:id/move", async function (req: Request, res: Response, next: NextFunction) {
     try {
         const { id } = req.params
         const { parentNodeId } = req.body
@@ -57,7 +57,7 @@ router.put("/nodes/:id/move", async function (req: Request, res: Response, next:
     }
 })
 
-router.put("/nodes/:id/order", async function (req: Request, res: Response, next: NextFunction) {
+router.put("/:id/order", async function (req: Request, res: Response, next: NextFunction) {
     try {
         const { id } = req.params
         const { ordering } = req.body
@@ -68,7 +68,7 @@ router.put("/nodes/:id/order", async function (req: Request, res: Response, next
     }
 })
 
-router.delete("/nodes/:id", async function (req: Request, res: Response, next: NextFunction) {
+router.delete("/:id", async function (req: Request, res: Response, next: NextFunction) {
     try {
         const { id } = req.params
         await deleteNode(id)
