@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { getNodes } from "../utils/api";
-import { List, Loader, Message, Icon, Container } from "semantic-ui-react";
+import { List, Loader, Message, Container, Dropdown } from "semantic-ui-react";
 import NodeInput from "./NodeAdd";
 import "./style.css";
 
@@ -15,6 +15,7 @@ export default function TreeView() {
   const [nodes, setNodes] = useState<Node[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [expandedNodes, setExpanedNodes] = useState<string[]>([]);
 
   useEffect(() => {
     const fetchNodes = async () => {
@@ -38,26 +39,49 @@ export default function TreeView() {
   if (loading)
     return (
       <Loader active inline="centered">
-        Loading...
+        <Loader />
       </Loader>
     );
   if (error) return <Message negative>{error}</Message>;
+
+  const handleToggle = (nodeId: string) => {
+    if (expandedNodes.includes(nodeId)) {
+      setExpanedNodes(expandedNodes.filter((id) => id !== nodeId));
+    } else {
+      setExpanedNodes([...expandedNodes, nodeId]);
+    }
+  };
 
   const renderTree = (parentNodeId: string | null): JSX.Element[] => {
     return nodes
       .filter((node) => node.parent_node_id === parentNodeId)
       .sort((a, b) => a.ordering - b.ordering)
-      .map((node) => (
-        <Container className="container-prop">
+      .map((node) => {
+        const isExpanded = expandedNodes.includes(node.id);
+        return (
           <List.Item key={node.id}>
-            <Icon name="folder" />
-            <List.Content>
-              <List.Header>{node.title}</List.Header>
-              <List.List>{renderTree(node.id)}</List.List>
-            </List.Content>
+            <Container style={{ display: "flex", alignItems: "center" }}>
+              <i className="folder icon" />
+              <Dropdown
+                text={node.title}
+                icon={isExpanded ? "angle down" : "angle right"}
+                onClick={() => handleToggle(node.id)}
+                style={{ marginLeft: "5px" }}
+              >
+                <Dropdown.Menu>
+                  {isExpanded && (
+                    <>
+                      {renderTree(node.id).map((child) => (
+                        <Dropdown.Item key={child.key}>{child}</Dropdown.Item>
+                      ))}
+                    </>
+                  )}
+                </Dropdown.Menu>
+              </Dropdown>
+            </Container>
           </List.Item>
-        </Container>
-      ));
+        );
+      });
   };
 
   const handleNodeAdded = (newNode: Node) => {
