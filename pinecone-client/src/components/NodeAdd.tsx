@@ -50,7 +50,8 @@ export default function NodeInput({
       setTitle("");
       setOrdering(0);
       setSelectedParentNode(null);
-    } catch (err) {
+    } catch (e) {
+      console.log("Adding new node failed", e);
       setError("Failed to add node");
     } finally {
       setLoading(false);
@@ -86,11 +87,23 @@ export default function NodeInput({
               value: node.id,
             }))}
             value={selectedParentNode}
-            onChange={(e, { value }) => setSelectedParentNode(value as string)}
+            onChange={(_e, { value }) => setSelectedParentNode(value as string)}
           />
         </Form.Field>
-        <Button type="submit" color="blue" icon="add" content="Add Node" />
-        {error && <Message error content={error} />}
+        <Container
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <Button type="submit" color="blue" icon="add" content="Add Node" />
+        </Container>
+        {error && (
+          <Container textAlign="center" style={{ paddingTop: "10px" }}>
+            <Message negative>{error}</Message>
+          </Container>
+        )}
       </Form>
     </Container>
   );
