@@ -27,7 +27,13 @@ Inside `pinecone-clien/src/utils/api.ts` I defined functions designed to send AP
 
 #### Build and run
 
-To run the frontend, navigate to `/pinecone-client` and run:
+To run the frontend, navigate to `/pinecone-client`. Then you must create a `.env` file where you must specify the server and port of your backend:
+
+```
+VITE_BASE_URL=http://localhost:port
+```
+
+Afterwards, run:
 
 ```
 npm i
@@ -39,3 +45,5 @@ npm run dev
 **Backend:** Node.js, Express.js, Cors and Postgres.
 
 **Frontend:** React.js, Axios and Semantic UI React.
+
+For the drag and drop feature in the frontend portion, I utilized the [dnd kit](https://docs.dndkit.com/).

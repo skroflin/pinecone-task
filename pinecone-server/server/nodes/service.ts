@@ -6,7 +6,7 @@ export async function getAllNodes() {
         select
         *
         from nodes
-        order by id  
+        order by ordering  
     `)
 
     return nodes.rows
