@@ -1,4 +1,4 @@
-import { Button, ButtonContent, Icon, Message } from "semantic-ui-react";
+import { Button, ButtonContent, Container, Icon, Message } from "semantic-ui-react";
 import { deleteNode } from "../utils/api";
 import { useState } from "react";
 
