@@ -1,6 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { getNodes, moveNode, changeNodeOrder } from "../utils/api";
-import { List, Loader, Message, Container, Icon } from "semantic-ui-react";
+import {
+  List,
+  Loader,
+  Message,
+  Container,
+  Icon,
+  Divider,
+} from "semantic-ui-react";
 import NodeInput from "./NodeAdd";
 import {
   DndContext,
@@ -208,11 +215,23 @@ export default function TreeView() {
       onDragEnd={handleDragEnd}
     >
       <div>
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: " center",
+            paddingTop: "10vh",
+          }}
+        >
+          <Icon name="tree" size="massive" />
+          <h1>Pinecone Task</h1>
+        </div>
         <NodeInput
           parentNodeId={null}
           existingNodes={nodes}
           onNodeAdded={handleNodeAdded}
         />
+        <Divider fitted style={{ marginTop: "10px" }} />
         {error && (
           <Container textAlign="center" style={{ paddingTop: "10px" }}>
             <Message negative>{error}</Message>
