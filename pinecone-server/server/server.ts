@@ -14,12 +14,14 @@ app.use(express.urlencoded())
 
 app.use(cors({
     origin: 'http://localhost:5173',
-    methods: ['GET', 'POST', 'PUT', 'DELETE'],
     allowedHeaders: ['Content-Type', 'Authorization'],
     credentials: true
 }))
 
-app.options('*', cors())
+app.use((_req, res, next) => {
+    console.log('Response headers:', res.getHeaders());
+    next();
+});
 
 app.use('/api/nodes', require('./nodes/routes'));
 

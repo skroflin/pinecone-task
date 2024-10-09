@@ -69,12 +69,12 @@ router.put("/:id/order", async function (req: Request, res: Response, next: Next
 
 router.delete("/:id", async function (req: Request, res: Response, next: NextFunction) {
     try {
-        const { id } = req.params
-        await deleteNode(id)
-        res.sendStatus(200)
+        const { id } = req.params;
+        await deleteNode(id);
+        res.sendStatus(200);
     } catch (e) {
-        next(e)
+        next(e);
     }
-})
+});
 
 module.exports = router

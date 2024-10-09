@@ -26,20 +26,20 @@ async function apiPostCall<T>(route: string, data: T) {
 async function apiPutCall<T>(route: string, data: T) {
     const res = await axios.put(`${BASE_URL}/api/${route}`, data, {
         headers: {
-            'Access-Control-Allow-Credentials': 'true',
-            'Access-Control-Allow-Origin': "*"
-        }
+            'Content-Type': 'application/json'
+        },
+        data: data,
+        withCredentials: true
     });
     return res.data;
 }
 
-async function apiDeleteCall<T>(route: string, data: T) {
+async function apiDeleteCall(route: string) {
     const res = await axios.delete(`${BASE_URL}/api/${route}`, {
         headers: {
-            'Access-Control-Allow-Credentials': 'true',
-            'Access-Control-Allow-Origin': "*"
+            'Content-Type': 'application/json',
         },
-        data: data
+        withCredentials: true,
     });
     return res.data;
 }
@@ -75,4 +75,4 @@ export const insertNode = (req: NodeInsertReq) => apiPostCall<NodeInsertReq>("no
 export const updateNode = (req: NodeUpdateReq) => apiPutCall<NodeUpdateReq>("nodes", req)
 export const moveNode = (req: MoveNodeReq) => apiPutCall(`nodes/${req.id}/move`, { parentNodeId: req.parentNodeId });
 export const changeNodeOrder = (req: ChangeNodeOrderReq) => apiPutCall<{ ordering: number }>(`nodes/${req.id}/order`, { ordering: req.ordering });
-export const deleteNode = (id: string) => { apiDeleteCall(`nodes/${id}`, {}) }
+export const deleteNode = (id: string) => { apiDeleteCall(`nodes/${id}`) };

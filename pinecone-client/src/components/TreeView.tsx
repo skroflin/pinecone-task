@@ -1,5 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { getNodes, moveNode, changeNodeOrder } from "../utils/api";
+import {
+  getNodes,
+  moveNode,
+  changeNodeOrder,
+  NodeUpdateReq,
+} from "../utils/api";
 import {
   List,
   Loader,
@@ -8,7 +13,6 @@ import {
   Icon,
   Divider,
 } from "semantic-ui-react";
-import NodeInput from "./NodeAdd";
 import {
   DndContext,
   closestCenter,
@@ -27,6 +31,8 @@ import {
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import "./style.css";
+import NodeInput from "./NodeAdd";
+import NodeUpdate from "./NodeUpdate";
 import NodeRemove from "./NodeRemove";
 
 interface Node {
@@ -41,6 +47,7 @@ interface SortableNodeProps {
   isExpanded: boolean;
   onToggle: () => void;
   children: React.ReactNode;
+  onNodeUpdated: (nodeId: string, updatedNode: NodeUpdateReq) => void;
   onNodeRemoved: (nodeId: string) => void;
 }
 
@@ -49,6 +56,7 @@ const SortableNode: React.FC<SortableNodeProps> = ({
   isExpanded,
   onToggle,
   children,
+  onNodeUpdated,
   onNodeRemoved,
 }) => {
   const { attributes, listeners, setNodeRef, transform, transition } =
@@ -73,12 +81,16 @@ const SortableNode: React.FC<SortableNodeProps> = ({
             <Icon name="bars" />
           </div>
           <span style={{ marginLeft: "5px" }}>{node.title}</span>
-          <NodeRemove nodeId={node.id} onNodeRemoved={onNodeRemoved} />
           <Icon
             name={isExpanded ? "minus" : "plus"}
             onClick={onToggle}
             style={{ cursor: "pointer", marginBottom: "4px" }}
           />
+          <NodeUpdate
+            node={node}
+            onNodeUpdated={(updatedNode) => onNodeUpdated(node.id, updatedNode)}
+          />
+          <NodeRemove nodeId={node.id} onNodeRemoved={onNodeRemoved} />
         </Container>
         {isExpanded && <List style={{ marginLeft: "20px" }}>{children}</List>}
       </List.Item>
@@ -168,6 +180,14 @@ export default function TreeView() {
     }
   };
 
+  const handleNodeUpdated = (nodeId: string, updatedNode: NodeUpdateReq) => {
+    setNodes((prevNodes) =>
+      prevNodes.map((node) =>
+        node.id === nodeId ? { ...node, ...updatedNode } : node
+      )
+    );
+  };
+
   const handleNodeRemoved = (removedNodeId: string) => {
     setNodes((prevNodes) =>
       prevNodes.filter((node) => node.id !== removedNodeId)
@@ -193,6 +213,7 @@ export default function TreeView() {
                 node={node}
                 isExpanded={isExpanded}
                 onToggle={() => handleToggle(node.id)}
+                onNodeUpdated={handleNodeUpdated}
                 onNodeRemoved={handleNodeRemoved}
               >
                 {renderTree(node.id)}

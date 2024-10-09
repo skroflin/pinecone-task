@@ -1,6 +1,12 @@
-import { Button, ButtonContent, Container, Icon, Message } from "semantic-ui-react";
-import { deleteNode } from "../utils/api";
 import { useState } from "react";
+import {
+  Button,
+  ButtonContent,
+  Container,
+  Icon,
+  Message,
+} from "semantic-ui-react";
+import { deleteNode } from "../utils/api";
 
 interface NodeRemoveProps {
   nodeId: string;
@@ -12,12 +18,14 @@ export default function NodeRemove({ nodeId, onNodeRemoved }: NodeRemoveProps) {
   const [error, setError] = useState<string | null>(null);
 
   const handleDelete = async () => {
+    setLoading(true);
+    setError(null);
     try {
-      deleteNode(nodeId);
+      await deleteNode(nodeId);
       onNodeRemoved(nodeId);
     } catch (error) {
       console.error("Error deleting node: ", error);
-      setError("Failed to delete node");
+      setError(error.message || "Failed to delete node");
     } finally {
       setLoading(false);
     }
@@ -31,7 +39,7 @@ export default function NodeRemove({ nodeId, onNodeRemoved }: NodeRemoveProps) {
         style={{ margin: "3px" }}
         onClick={handleDelete}
         loading={loading}
-        error={!!error}
+        disabled={loading}
       >
         <ButtonContent hidden>Remove</ButtonContent>
         <ButtonContent visible>
@@ -39,9 +47,13 @@ export default function NodeRemove({ nodeId, onNodeRemoved }: NodeRemoveProps) {
         </ButtonContent>
       </Button>
       {error && (
-        <Container textAlign="center" style={{ paddingTop: "10px" }}>
+        <div
+          style={{
+            float: "right",
+          }}
+        >
           <Message negative>{error}</Message>
-        </Container>
+        </div>
       )}
     </div>
   );
