@@ -34,6 +34,7 @@ interface SortableNodeProps {
   isExpanded: boolean;
   onToggle: () => void;
   children: React.ReactNode;
+  onNodeRemoved: (nodeId: string) => void;
 }
 
 const SortableNode: React.FC<SortableNodeProps> = ({
@@ -41,6 +42,7 @@ const SortableNode: React.FC<SortableNodeProps> = ({
   isExpanded,
   onToggle,
   children,
+  onNodeRemoved,
 }) => {
   const { attributes, listeners, setNodeRef, transform, transition } =
     useSortable({ id: node.id });
@@ -64,6 +66,7 @@ const SortableNode: React.FC<SortableNodeProps> = ({
             <Icon name="bars" />
           </div>
           <span style={{ marginLeft: "5px" }}>{node.title}</span>
+          <NodeRemove nodeId={node.id} onNodeRemoved={onNodeRemoved} />
           <Icon
             name={isExpanded ? "minus" : "plus"}
             onClick={onToggle}
@@ -183,12 +186,9 @@ export default function TreeView() {
                 node={node}
                 isExpanded={isExpanded}
                 onToggle={() => handleToggle(node.id)}
+                onNodeRemoved={handleNodeRemoved}
               >
                 {renderTree(node.id)}
-                <NodeRemove
-                  nodeId={node.id}
-                  onNodeRemoved={handleNodeRemoved}
-                />
               </SortableNode>
             );
           })}

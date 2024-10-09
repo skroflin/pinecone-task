@@ -24,19 +24,25 @@ export default function NodeRemove({ nodeId, onNodeRemoved }: NodeRemoveProps) {
   };
 
   return (
-    <Button
-      animated="vertical"
-      size="small"
-      style={{ margin: "3px" }}
-      onClick={handleDelete}
-      loading={loading}
-      error={!!error}
-    >
-      <ButtonContent hidden>Remove</ButtonContent>
-      <ButtonContent visible>
-        <Icon name="trash alternate" size="small" />
-      </ButtonContent>
-      <Message negative>{error}</Message>
-    </Button>
+    <div>
+      <Button
+        animated="vertical"
+        size="small"
+        style={{ margin: "3px" }}
+        onClick={handleDelete}
+        loading={loading}
+        error={!!error}
+      >
+        <ButtonContent hidden>Remove</ButtonContent>
+        <ButtonContent visible>
+          <Icon name="trash alternate" size="small" />
+        </ButtonContent>
+      </Button>
+      {error && (
+        <Container textAlign="center" style={{ paddingTop: "10px" }}>
+          <Message negative>{error}</Message>
+        </Container>
+      )}
+    </div>
   );
 }
