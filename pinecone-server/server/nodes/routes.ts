@@ -61,8 +61,7 @@ router.put("/:id/order", async function (req: Request, res: Response, next: Next
     try {
         const { id } = req.params
         const { ordering } = req.body
-        const node = await getNodeById(id)
-        res.json(await changeNodeOrder(id, ordering, node.parentNodeId))
+        res.json(await changeNodeOrder(id, ordering))
     } catch (e) {
         next(e)
     }

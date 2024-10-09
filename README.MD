@@ -44,6 +44,6 @@ npm run dev
 
 **Backend:** Node.js, Express.js, Cors and Postgres.
 
-**Frontend:** React.js, Axios and Semantic UI React.
+**Frontend:** React.js, Vite, Axios and Semantic UI React.
 
 For the drag and drop feature in the frontend portion, I utilized the [dnd kit](https://docs.dndkit.com/).

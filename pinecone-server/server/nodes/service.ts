@@ -63,69 +63,45 @@ export async function moveNode(id: string, parentNodeId: string) {
     })
 }
 
-export async function changeNodeOrder(id: string, ordering: number, parentNodeId: string) {
+export async function changeNodeOrder(id: string, newOrdering: number) {
     await transactionQuery(async (client) => {
-        // const parentNode = await client.query(`
-        //     select
-        //     *
-        //     from nodes
-        //     where
-        //     "id" = $1    
-        // `, [parentNodeId])
-
-        // if (parentNode.rows.length === 0) {
-        //     throw new Error(`Parent node doesn't exist.`)
-        // }
-
-        const children = await client.query(`
+        const currentNode = await client.query(`
             select
             *
-            from nodes
-            where 
-            "parent_node_id" = $1
-            order by "ordering"   
-        `, [parentNodeId])
+            from nodes 
+            where id = $1    
+        `, [id])
 
-        const nodeIndex = children.rows.findIndex((row: { id: string; }) => row.id === id)
-
-        if (nodeIndex === -1) {
-            throw new Error(`Node with id: ${id} doesn't exist.`)
+        if (currentNode.rows.length === 0) {
+            throw new Error(`Node with ${id} doesn't exits`)
         }
 
-        const node = children.rows[nodeIndex]
+        const node = currentNode.rows[0]
+        const oldOrdering = node.ordering
+        const parentNodeId = node.parent_node_id
 
-        if (ordering < 1 || ordering > children.rows.length + 1) {
-            throw new Error(`Invalid new ordering`)
+        if (newOrdering > oldOrdering) {
+            await client.query(`
+                update nodes
+                set ordering - 1
+                where parent_node_id = $1
+                and ordering > $2 and ordering <= $3    
+            `, [parentNodeId, oldOrdering, newOrdering])
+        } else if (newOrdering < oldOrdering) {
+            await client.query(`
+                update nodes 
+                set ordering + 1
+                where parent_node_id = $1
+                and ordering >= $2
+                and ordering < $3    
+            `, [parentNodeId, newOrdering])
         }
-
-        const newOrderings = children.rows.map((row: {
-            ordering: number; id: string
-        }, index: number) => {
-            if (row.id === id) {
-                return ordering
-            } else if (index > nodeIndex && row.ordering >= ordering) {
-                return row.ordering - 1
-            } else {
-                return row.ordering
-            }
-        })
 
         await client.query(`
             update nodes
-            set
-            "ordering" = $1
-            where 
-            "id" = $2    
-        `, [ordering, id])
-
-        for (let i = 0; i < newOrderings.length; i++) {
-            await client.query(`
-                update nodes
-                set "ordering" = $1
-                where
-                "id" = $2    
-            `, [newOrderings[i], children.rows[i].id])
-        }
+            set ordering = $1
+            where id = $2    
+        `, [newOrdering, id])
     })
 }
 

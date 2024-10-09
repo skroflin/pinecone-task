@@ -60,10 +60,12 @@ export interface NodeUpdateReq {
 }
 
 export interface MoveNodeReq {
+    id: string
     parentNodeId: string
 }
 
 export interface ChangeNodeOrderReq {
+    id: string
     ordering: number
 }
 
@@ -71,6 +73,6 @@ export const getNodes = () => apiGetCall("nodes")
 export const getNodeById = (id: string) => { apiGetCall(`nodes/${id}`) }
 export const insertNode = (req: NodeInsertReq) => apiPostCall<NodeInsertReq>("nodes", req)
 export const updateNode = (req: NodeUpdateReq) => apiPutCall<NodeUpdateReq>("nodes", req)
-export const moveNode = (req: MoveNodeReq) => apiPutCall<MoveNodeReq>("nodes", req)
-export const changeNodeOrder = (req: ChangeNodeOrderReq) => apiPutCall<ChangeNodeOrderReq>("nodes", req)
+export const moveNode = (req: MoveNodeReq) => apiPutCall(`nodes/${req.id}/move`, { parentNodeId: req.parentNodeId });
+export const changeNodeOrder = (req: ChangeNodeOrderReq) => apiPutCall<{ ordering: number }>(`nodes/${req.id}/order`, { ordering: req.ordering });
 export const deleteNode = (id: string) => { apiDeleteCall(`nodes/${id}`, {}) }

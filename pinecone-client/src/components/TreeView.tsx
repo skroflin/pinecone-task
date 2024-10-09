@@ -20,6 +20,7 @@ import {
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import "./style.css";
+import NodeRemove from "./NodeRemove";
 
 interface Node {
   id: string;
@@ -64,7 +65,7 @@ const SortableNode: React.FC<SortableNodeProps> = ({
           </div>
           <span style={{ marginLeft: "5px" }}>{node.title}</span>
           <Icon
-            name={isExpanded ? "caret down" : "caret right"}
+            name={isExpanded ? "minus" : "plus"}
             onClick={onToggle}
             style={{ cursor: "pointer", marginBottom: "4px" }}
           />
@@ -98,7 +99,7 @@ export default function TreeView() {
         setNodes(data);
       } catch (e) {
         console.error("Fetch error: ", e);
-        setError(e.message || "Failed to load nodes");
+        setError("Failed to load nodes");
       } finally {
         setLoading(false);
       }
@@ -137,8 +138,15 @@ export default function TreeView() {
         const targetNode = nodes.find((node) => node.id === over?.id);
 
         if (draggedNode && targetNode) {
-          await moveNode({ parentNodeId: targetNode.parent_node_id || "" });
-          await changeNodeOrder({ ordering: newIndex });
+          await moveNode({
+            id: draggedNode.id,
+            parentNodeId: targetNode.parent_node_id || "",
+          });
+
+          await changeNodeOrder({
+            id: draggedNode.id,
+            ordering: targetNode.ordering,
+          });
         }
 
         const updatedNodes = await getNodes();
@@ -148,6 +156,12 @@ export default function TreeView() {
         setError("Failed to update node position");
       }
     }
+  };
+
+  const handleNodeRemoved = (removedNodeId: string) => {
+    setNodes((prevNodes) =>
+      prevNodes.filter((node) => node.id !== removedNodeId)
+    );
   };
 
   const renderTree = (parentNodeId: string | null): JSX.Element => {
@@ -171,6 +185,10 @@ export default function TreeView() {
                 onToggle={() => handleToggle(node.id)}
               >
                 {renderTree(node.id)}
+                <NodeRemove
+                  nodeId={node.id}
+                  onNodeRemoved={handleNodeRemoved}
+                />
               </SortableNode>
             );
           })}
