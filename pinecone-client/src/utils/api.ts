@@ -26,8 +26,6 @@ async function apiPutCall<T>(route: string, data: T) {
         headers: {
             'Content-Type': 'application/json'
         },
-        data: data,
-        withCredentials: true
     });
     return res.data;
 }
