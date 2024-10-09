@@ -5,8 +5,7 @@ const BASE_URL = import.meta.env.VITE_BASE_URL;
 async function apiGetCall(route: string) {
     const res = await axios.get(`${BASE_URL}/api/${route}`, {
         headers: {
-            'Access-Control-Allow-Credentials': 'true',
-            'Access-Control-Allow-Origin': "*"
+            'Content-Type': 'application/json'
         }
     });
     return res.data;
@@ -16,8 +15,7 @@ async function apiGetCall(route: string) {
 async function apiPostCall<T>(route: string, data: T) {
     const res = await axios.post(`${BASE_URL}/api/${route}`, data, {
         headers: {
-            'Access-Control-Allow-Credentials': 'true',
-            'Access-Control-Allow-Origin': "*"
+            'Content-Type': 'application/json'
         }
     });
     return res.data;
@@ -55,6 +53,7 @@ export interface NodeInsertReq {
 }
 
 export interface NodeUpdateReq {
+    id: string
     title: string
     parentNodeId?: string
 }
@@ -70,9 +69,9 @@ export interface ChangeNodeOrderReq {
 }
 
 export const getNodes = () => apiGetCall("nodes")
-export const getNodeById = (id: string) => { apiGetCall(`nodes/${id}`) }
+export const getNodeById = (id: string) => apiGetCall(`nodes/${id}`);
 export const insertNode = (req: NodeInsertReq) => apiPostCall<NodeInsertReq>("nodes", req)
-export const updateNode = (req: NodeUpdateReq) => apiPutCall<NodeUpdateReq>("nodes", req)
+export const updateNode = (req: NodeUpdateReq) => apiPutCall<NodeUpdateReq>(`nodes/${req.id}`, req)
 export const moveNode = (req: MoveNodeReq) => apiPutCall(`nodes/${req.id}/move`, { parentNodeId: req.parentNodeId });
 export const changeNodeOrder = (req: ChangeNodeOrderReq) => apiPutCall<{ ordering: number }>(`nodes/${req.id}/order`, { ordering: req.ordering });
-export const deleteNode = (id: string) => { apiDeleteCall(`nodes/${id}`) };
+export const deleteNode = (id: string) => apiDeleteCall(`nodes/${id}`);
